@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
             ));
             for (int column = 0; column < numberOfColumns; column++) {
                 ImageButton button = new ImageButton(this, null, 0, R.style.SquareStyle);
-                //button.setId(row * numberOfRows + column);
                 button.setId(row * numberOfColumns + column);
                 button.setLayoutParams(new LinearLayout.LayoutParams(
                         btnWeight,

@@ -18,18 +18,35 @@ android:fillViewport="true">
         android:id="@+id/boardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:background="#C0C0C0"
         android:orientation="vertical"
         android:padding="5dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
+        <Button
+            android:id="@+id/player_1_wins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player 1 wins" />
+
+        <Button
+            android:id="@+id/player_2_wins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player 2 wins" />
+
+        <Button
+            android:id="@+id/draw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Draw" />
     </LinearLayout>
 
 

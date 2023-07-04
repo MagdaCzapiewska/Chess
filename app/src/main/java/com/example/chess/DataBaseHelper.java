@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -136,6 +137,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             long draws = cursor.getLong(3);
             long loses = cursor.getLong(4);
 
+            Log.d("DataBaseHelper", "Wins: " + wins + ", draws: " + draws + ", loses: " + loses);
+
             returnObject = new UserModel(userID, userName, wins, draws, loses);
         }
         cursor.close();
@@ -154,8 +157,37 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 int userID = cursor.getInt(0);
                 String userName = cursor.getString(1);
+                long wins = cursor.getLong(2);
+                long draws = cursor.getLong(3);
+                long loses = cursor.getLong(4);
 
-                UserModel newUser = new UserModel(userID, userName);
+                UserModel newUser = new UserModel(userID, userName, wins, draws, loses);
+                returnList.add(newUser);
+            } while (cursor.moveToNext());
+        }
+
+        // Close both the cursor and the db when done.
+        cursor.close();
+        db.close();
+        return returnList;
+    }
+
+    public List<UserModel> getEveryoneSortedByWins() {
+        List<UserModel> returnList = new ArrayList<>();
+
+        String queryString = "SELECT * FROM " + USER_TABLE + " ORDER BY " + COLUMN_USER_WINS + " DESC";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(queryString, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int userID = cursor.getInt(0);
+                String userName = cursor.getString(1);
+                long wins = cursor.getLong(2);
+                long draws = cursor.getLong(3);
+                long loses = cursor.getLong(4);
+
+                UserModel newUser = new UserModel(userID, userName, wins, draws, loses);
                 returnList.add(newUser);
             } while (cursor.moveToNext());
         }
@@ -167,16 +199,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public void addResult(int id, String column) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        // String queryString = "UPDATE " + USER_TABLE
-        //       + " SET " + column + " = " + column + " + 1"
-        //       + " WHERE " + COLUMN_ID + " = " + id;
 
-        String queryString = "UPDATE " + USER_TABLE
-               + " SET " + column + " = 1"
-               + " WHERE " + COLUMN_ID + " = " + id;
-        Cursor cursor = db.rawQuery(queryString, null);
-        cursor.close();
+        UserModel user = this.getOneById(id);
+        if (Objects.equals(column, COLUMN_USER_WINS)) {
+            user.setWins(user.getWins() + 1);
+        }
+        if (Objects.equals(column, COLUMN_USER_LOSES)) {
+            user.setLoses(user.getLoses() + 1);
+        }
+        if (Objects.equals(column, COLUMN_USER_DRAWS)) {
+            user.setDraws(user.getDraws() + 1);
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_WINS, user.getWins());
+        values.put(COLUMN_USER_LOSES, user.getLoses());
+        values.put(COLUMN_USER_DRAWS, user.getDraws());
+
+        db.update(USER_TABLE, values, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
         db.close();
     }
 }

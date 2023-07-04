@@ -4,13 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RankingActivity">
+    tools:context=".RankingActivity"
+    tools:ignore="ExtraText">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/users_scroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:text="Ranking"
-        tools:layout_editor_absoluteX="173dp"
-        tools:layout_editor_absoluteY="210dp" />
+        tools:layout_editor_absoluteX="166dp"
+        tools:layout_editor_absoluteY="31dp" />
+
+    <ScrollView
+        android:id="@+id/users_scroll"
+        android:layout_width="409dp"
+        android:layout_height="550dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:isScrollContainer="false" >
+
+        <TableLayout
+            android:id="@+id/layout_ranking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" >
+
+        </TableLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,14 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class King extends Figure {
-    private boolean wasMoved;
     public King(FigColor color, Pair position) {
         super(color, position);
-        wasMoved = false;
     }
 
     @Override
-    public List<Pair> getMoves(Figure[][] board) {
+    public List<Pair> getMoves(Figure[][] board, Game.LastMove lastMove) {
         int x, y;
         List<Pair> possibleMoves = new ArrayList<>();
 

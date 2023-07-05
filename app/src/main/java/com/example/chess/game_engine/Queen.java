@@ -11,7 +11,7 @@ public class Queen extends Figure {
     }
 
     @Override
-    public List<Pair> getMoves(Figure[][] board) {
+    public List<Pair> getMoves(Figure[][] board, Game.LastMove lastMove) {
         int x, y;
         List<Pair> possibleMoves = new ArrayList<>();
 

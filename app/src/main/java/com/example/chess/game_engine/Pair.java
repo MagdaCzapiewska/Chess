@@ -13,4 +13,13 @@ public class Pair {
         this.row = row;
         this.column = column;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Pair) {
+            Pair other = (Pair) object;
+            return row == other.row && column == other.column;
+        }
+        return false;
+    }
 }

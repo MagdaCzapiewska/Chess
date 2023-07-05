@@ -1,25 +1,33 @@
 package com.example.chess.game_engine;
 
+import static java.lang.Math.abs;
+
 import com.example.chess.FigColor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    private final int player1;
-    private final int player2;
+    int numberOfColumns = 8;
+    int numberOfRows = 8;
+
+    private int[] player_id;
     private Figure[][] board;
     private FigColor whoseTurn;
-    private Pair chosenField;
-    private List<Pair> possbileMoves;
+    private final Pair chosenField;
+    private final LastMove lastMove;
+    private final Pair[] kingPostion;
 
-    public Game(int player1, int player2) {
-        this.player1 = player1;
-        this.player2 = player2;
+    public Game(int[] player_id) {
+        this.player_id = player_id;
         createBoard();
         whoseTurn = FigColor.WHITE;
         chosenField = new Pair(0, 0);
-        possbileMoves = new ArrayList<>();
+        lastMove = new LastMove();
+
+        kingPostion = new Pair[2];
+        kingPostion[0] = new Pair(8,5);
+        kingPostion[1] = new Pair(1,5);
     }
 
     private void createBoard() {
@@ -64,11 +72,230 @@ public class Game {
         return whoseTurn;
     }
 
+    public void switchTurn() {
+        if (whoseTurn == FigColor.WHITE)
+            whoseTurn = FigColor.BLACK;
+        else
+            whoseTurn = FigColor.WHITE;
+    }
+
     public Pair getChosenField() {
         return chosenField;
     }
 
     public void setChosenField(int row, int column) {
         chosenField.setPair(row, column);
+    }
+
+    public LastMove getLastMove() {
+        return lastMove;
+    }
+
+    public void setLastMove(int from_row, int from_column, int to_row, int to_column, Figure figure) {
+        lastMove.setLastMove(from_row, from_column, to_row, to_column, figure);
+    }
+
+    public Pair getLastMoveTo() {
+        return lastMove.to;
+    }
+
+    public boolean wasDoublePawnMove() {
+        return lastMove.wasDoublePawnMove();
+    }
+
+    public void moveKing(int row, int column) {
+        if (whoseTurn == FigColor.WHITE)
+            kingPostion[0].setPair(row, column);
+        else
+            kingPostion[1].setPair(row, column);
+    }
+
+    public boolean isCheck() {
+        int color = (whoseTurn == FigColor.WHITE ? 0 : 1);
+        int kingRow = kingPostion[color].row; int kingColumn = kingPostion[color].column;
+        int x, y;
+
+        // Ruch poprzeczny
+        x = kingRow + 1;
+        y = kingColumn + 1;
+        while (x <= numberOfRows && y <= numberOfColumns && board[x][y] == null) { x++; y++; }
+        if (x <= numberOfRows && y <= numberOfColumns) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Bishop || potentialAttacker instanceof Queen)
+                    return true;
+                if (potentialAttacker instanceof Pawn && abs(kingRow - x) == 1 && abs(kingColumn - y) == 1)
+                    return true;
+            }
+        }
+
+        x = kingRow + 1;
+        y = kingColumn - 1;
+        while (x <= numberOfRows && y > 0 && board[x][y] == null) { x++; y--; }
+        if (x <= numberOfRows && y > 0) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Bishop || potentialAttacker instanceof Queen)
+                    return true;
+                if (potentialAttacker instanceof Pawn && abs(kingRow - x) == 1 && abs(kingColumn - y) == 1)
+                    return true;
+            }
+        }
+
+        x = kingRow - 1;
+        y = kingColumn + 1;
+        while (x > 0 && y <= numberOfColumns && board[x][y] == null) { x--; y++; }
+        if (x > 0 && y <= numberOfColumns) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Bishop || potentialAttacker instanceof Queen)
+                    return true;
+                if (potentialAttacker instanceof Pawn && abs(kingRow - x) == 1 && abs(kingColumn - y) == 1)
+                    return true;
+            }
+        }
+
+        x = kingRow - 1;
+        y = kingColumn - 1;
+        while (x > 0 && y > 0 && board[x][y] == null) { x--; y--; }
+        if (x > 0 && y > 0) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Bishop || potentialAttacker instanceof Queen)
+                    return true;
+                if (potentialAttacker instanceof Pawn && abs(kingRow - x) == 1 && abs(kingColumn - y) == 1)
+                    return true;
+            }
+        }
+
+        // Ruch w boki
+        x = kingRow + 1;
+        y = kingColumn;
+        while (x <= numberOfRows && board[x][y] == null) { x++; }
+        if (x <= numberOfRows) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Rook || potentialAttacker instanceof Queen)
+                    return true;
+            }
+        }
+
+        x = kingRow;
+        y = kingColumn + 1;
+        while (y <= numberOfColumns && board[x][y] == null) { y++; }
+        if (y <= numberOfColumns) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Rook || potentialAttacker instanceof Queen)
+                    return true;
+            }
+        }
+
+        x = kingRow - 1;
+        y = kingColumn;
+        while (x > 0 && board[x][y] == null) { x--; }
+        if (x > 0) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Rook || potentialAttacker instanceof Queen)
+                    return true;
+            }
+        }
+
+        x = kingRow;
+        y = kingColumn - 1;
+        while (y > 0 && board[x][y] == null) { y--; }
+        if (y > 0) {    // Wiemy, że (board[x][y] != null)
+            Figure potentialAttacker = board[x][y];
+            if (potentialAttacker.getColor() != whoseTurn) {
+                if (potentialAttacker instanceof Rook || potentialAttacker instanceof Queen)
+                    return true;
+            }
+        }
+
+        // Ruchy skoczka
+        x = kingRow + 2;
+        y = kingColumn + 1;
+        if (x <= numberOfRows && y <= numberOfColumns && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+                return true;
+        }
+
+        x = kingRow + 1;
+        y = kingColumn + 2;
+        if (x <= numberOfRows && y <= numberOfColumns && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+            return true;
+        }
+
+        x = kingRow - 1;
+        y = kingColumn + 2;
+        if (x > 0 && y <= numberOfColumns && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+            return true;
+        }
+
+        x = kingRow - 2;
+        y = kingColumn + 1;
+        if (x > 0 && y <= numberOfColumns && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+            return true;
+        }
+
+        x = kingRow - 2;
+        y = kingColumn - 1;
+        if (x > 0 && y > 0 && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+            return true;
+        }
+
+        x = kingRow - 1;
+        y = kingColumn - 2;
+        if (x > 0 && y > 0 && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+            return true;
+        }
+
+        x = kingRow + 1;
+        y = kingColumn - 2;
+        if (x <= numberOfRows && y > 0 && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+            return true;
+        }
+
+        x = kingRow + 2;
+        y = kingColumn - 1;
+        if (x <= numberOfRows && y > 0 && board[x][y] != null
+                && board[x][y].getColor() != whoseTurn && board[x][y] instanceof Knight) {
+            return true;
+        }
+
+        return false;
+    }
+
+    static class LastMove {
+        public Pair from;
+        public Pair to;
+        public Figure figure;
+
+        public LastMove() {
+            from = new Pair(0,0);
+            to = new Pair(0,0);
+            figure = null;
+        }
+
+        public void setLastMove(int from_row, int from_column, int to_row, int to_column, Figure figure) {
+            from.setPair(from_row, from_column);
+            to.setPair(to_row, to_column);
+            this.figure = figure;
+        }
+
+        public boolean wasDoublePawnMove() {
+            if (figure instanceof Pawn) {
+                return abs(from.row - to.row) == 2 && from.column == to.column;
+            }
+
+            return false;
+        }
     }
 }

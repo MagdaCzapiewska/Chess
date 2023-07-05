@@ -1,5 +1,7 @@
 package com.example.chess;
 
+import static java.lang.Math.abs;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chess.game_engine.Figure;
 import com.example.chess.game_engine.Game;
+import com.example.chess.game_engine.King;
 import com.example.chess.game_engine.Pair;
+import com.example.chess.game_engine.Pawn;
 
 import java.util.List;
 
@@ -36,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        game = new Game(player_id[0], player_id[1]);
+        game = new Game(player_id);
 
         Intent i = getIntent();
         player_username[0] = i.getStringExtra("user_1_name");
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             for (int column = 0; column < numberOfColumns; column++) {
                 Button button = new Button(this, null, 0, R.style.SquareStyle);
                 button.setId(row * numberOfColumns + column);
+                button.setBackgroundColor(Color.GRAY);
                 button.setOnClickListener(selectTile);
                 button.setLayoutParams(new LinearLayout.LayoutParams(
                         btnWeight,
@@ -145,11 +150,12 @@ public class MainActivity extends AppCompatActivity {
             int currentColumn = id % numberOfColumns + 1;
 
             if (chosenField.row == 0 && chosenField.column == 0) {
-                if (whoseTurn == board[currentRow][currentColumn].getColor()) {
+                if (board[currentRow][currentColumn] != null
+                        && whoseTurn == board[currentRow][currentColumn].getColor()) {
                     game.setChosenField(currentRow, currentColumn);
-                    ((Button)view).setBackgroundColor(Color.MAGENTA);
+                    ((Button) view).setBackgroundColor(Color.MAGENTA);
 
-                    possibleMoves = board[currentRow][currentColumn].getMoves(board);
+                    possibleMoves = board[currentRow][currentColumn].getMoves(board, game.getLastMove());
                     for (int i = 0; i < possibleMoves.size(); i++) {
                         int tempId = (possibleMoves.get(i).row - 1) * numberOfColumns + (possibleMoves.get(i).column - 1);
                         Button btn = findViewById(tempId);
@@ -158,20 +164,72 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else {
                 if (chosenField.row == currentRow && chosenField.column == currentColumn) {
+                    // Czyścimy podświetlenie pól
                     game.setChosenField(0,0);
-                    ((Button)view).setBackgroundColor(Color.WHITE);
+                    ((Button)view).setBackgroundColor(Color.GRAY);
 
                     for (int i = 0; i < possibleMoves.size(); i++) {
                         int tempId = (possibleMoves.get(i).row - 1) * numberOfColumns + (possibleMoves.get(i).column - 1);
                         Button btn = findViewById(tempId);
-                        btn.setBackgroundColor(Color.WHITE);
+                        btn.setBackgroundColor(Color.GRAY);
+                    }
+
+                    possibleMoves.clear();
+                } else if (possibleMoves.contains(new Pair(currentRow, currentColumn))) {
+                    Figure chosenFigure = board[chosenField.row][chosenField.column];
+
+                    // TODO: zmienić na obrazki
+                    // Zamieniamy stary przycisk na '-'
+                    int countedId = (chosenField.row - 1) * numberOfColumns + (chosenField.column - 1);
+                    Button btn = findViewById(countedId);
+                    btn.setText("-");
+                    btn.setTextColor(Color.BLACK);
+                    btn.setBackgroundColor(Color.GRAY);
+
+                    // Zamieniamy wybrany przycisk na wybraną wcześniej figurę
+                    countedId = (currentRow - 1) * numberOfColumns + (currentColumn - 1);
+                    btn = findViewById(countedId);
+                    btn.setText(board[chosenField.row][chosenField.column].toString());
+                    btn.setTextColor(board[chosenField.row][chosenField.column].getRGBColor());
+
+                    // Sprawdzamy bicie w przelocie
+                    if (chosenFigure instanceof Pawn
+                            && board[currentRow][currentColumn] == null
+                            && abs(currentColumn - chosenField.column) == 1) {
+                        Pair lastTo = game.getLastMoveTo();
+
+                        countedId = (lastTo.row - 1) * numberOfColumns + (lastTo.column - 1);
+                        btn = findViewById(countedId);
+                        btn.setText("-");
+                        btn.setTextColor(Color.BLACK);
+                        btn.setBackgroundColor(Color.GRAY);
+
+                        board[lastTo.row][lastTo.column] = null;
+                    }
+
+                    if (chosenFigure instanceof King) {
+                        game.moveKing(currentRow, currentColumn);
+                    }
+
+                    // Zmieniamy stan gry
+                    board[currentRow][currentColumn] = chosenFigure;
+                    board[chosenField.row][chosenField.column] = null;
+
+                    chosenFigure.setPosition(currentRow, currentColumn);
+                    chosenFigure.setWasMoved();
+                    game.setLastMove(chosenField.row, chosenField.column, currentRow, currentColumn, chosenFigure);
+                    game.switchTurn();
+
+                    // Czyścimy podświetlenie pól
+                    game.setChosenField(0,0);
+                    for (int i = 0; i < possibleMoves.size(); i++) {
+                        int tempId = (possibleMoves.get(i).row - 1) * numberOfColumns + (possibleMoves.get(i).column - 1);
+                        btn = findViewById(tempId);
+                        btn.setBackgroundColor(Color.GRAY);
                     }
 
                     possibleMoves.clear();
                 }
-
-                // TODO: wykonie ruchu jeśli należy do possibleMoves
-                // TODO: skoczek źle wskazuje możliwe ruchy
             }
         }
     };

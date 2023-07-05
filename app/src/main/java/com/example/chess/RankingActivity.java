@@ -3,8 +3,13 @@ package com.example.chess;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -39,6 +44,13 @@ public class RankingActivity extends AppCompatActivity {
         columns[3].setText("Loses");
 
         for (int i = 0; i < 4; ++i) {
+            columns[i].setWidth(250);
+            columns[i].setHeight(100);
+            columns[i].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            columns[i].setBackgroundColor(Color.MAGENTA);
+            columns[i].setGravity(Gravity.CENTER | Gravity.CENTER);
+            columns[i].setTypeface(null, Typeface.BOLD);
+            columns[i].setTextSize(14);
             row.addView(columns[i]);
         }
         tableLayout.addView(row);
@@ -54,6 +66,13 @@ public class RankingActivity extends AppCompatActivity {
             columns[2].setText(String.valueOf((int)user.getDraws()));
             columns[3].setText(String.valueOf((int)user.getLoses()));
             for (int i = 0; i < 4; ++i) {
+                columns[i].setWidth(250);
+                columns[i].setHeight(100);
+                columns[i].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                columns[i].setBackgroundColor(Color.GRAY);
+                columns[i].setGravity(Gravity.CENTER | Gravity.CENTER);
+                columns[i].setTypeface(null, Typeface.BOLD);
+                columns[i].setTextSize(14);
                 row.addView(columns[i]);
             }
             tableLayout.addView(row);

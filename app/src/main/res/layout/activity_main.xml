@@ -15,6 +15,178 @@ android:fillViewport="true">
     android:gravity="center_vertical">
 
     <LinearLayout
+        android:id="@+id/usersView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#FF0000"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/drawView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        android:weightSum="2">
+
+        <ImageView
+            android:id="@+id/whitePawn"
+            android:layout_width="32dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textViewUserWhite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/w_pawn_1x_ns" />
+
+        <TextView
+            android:id="@+id/textViewUserWhite"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:background="#C0C0C0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/blackPawn"
+            app:layout_constraintStart_toEndOf="@+id/whitePawn"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/blackPawn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textViewUserBlack"
+            app:layout_constraintStart_toEndOf="@+id/textViewUserWhite"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/b_pawn_1x_ns" />
+
+        <TextView
+            android:id="@+id/textViewUserBlack"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:background="#C0C0C0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/blackPawn"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/drawView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#FFFF00"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/surrenderView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usersView"
+        app:layout_constraintVertical_bias="1.0"
+        android:weightSum="3">
+
+    <Button
+        android:id="@+id/drawButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/acceptDrawButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Draw"
+        android:layout_margin="2dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/acceptDrawButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/declineDrawButton"
+        app:layout_constraintStart_toEndOf="@+id/drawButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Accept"
+        android:layout_margin="2dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/declineDrawButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/acceptDrawButton"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Decline"
+        android:layout_margin="2dp"
+        android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/surrenderView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="#FFFF00"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/boardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/drawView"
+        app:layout_constraintVertical_bias="1.0"
+        android:weightSum="3">
+
+        <Button
+            android:id="@+id/surrenderButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/acceptSurrenderButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Draw"
+            android:layout_margin="2dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/acceptSurrenderButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/declineSurrenderButton"
+            app:layout_constraintStart_toEndOf="@+id/surrenderButton"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Accept"
+            android:layout_margin="2dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/declineSurrenderButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/acceptSurrenderButton"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Decline"
+            android:layout_margin="2dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/boardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -28,37 +200,52 @@ android:fillViewport="true">
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surrenderView"
         app:layout_constraintVertical_bias="1.0">
-
-        <Button
-            android:id="@+id/player_1_wins"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Player 1 wins" />
-
-        <Button
-            android:id="@+id/player_2_wins"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Player 2 wins" />
-
-        <Button
-            android:id="@+id/draw"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Draw" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textViewCheck"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+    <LinearLayout
+        android:id="@+id/textCheckView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:background="#C0C0C0"
+        android:padding="5dp"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/figuresView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boardView"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/textViewCheck"
+            android:layout_width="111dp"
+            android:layout_height="30dp"
+            android:background="#00C0C0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/figuresView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:background="#FFFF00"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:layout_marginTop="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCheckView"
+        app:layout_constraintVertical_bias="1.0" >
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

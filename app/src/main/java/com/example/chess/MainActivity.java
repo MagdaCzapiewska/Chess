@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
         int paddingDp = 5;
 
         LinearLayout boardView = findViewById(R.id.boardView);
-        Button player_1_wins = findViewById(R.id.player_1_wins);
-        Button player_2_wins = findViewById(R.id.player_2_wins);
-        Button draw = findViewById(R.id.draw);
+        // Button player_1_wins = findViewById(R.id.player_1_wins);
+        // Button player_2_wins = findViewById(R.id.player_2_wins);
+        // Button draw = findViewById(R.id.draw);
         checkText = findViewById(R.id.textViewCheck);
 
         float scale = getResources().getDisplayMetrics().density;
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             boardView.addView(rowLayout);
         }
 
+        /*
         player_1_wins.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, userModel_2.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
 
         player_2_wins.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, userModel_2.toString(), Toast.LENGTH_SHORT).show();
             }
         });
-
+        */
         showFigures();
     }
 

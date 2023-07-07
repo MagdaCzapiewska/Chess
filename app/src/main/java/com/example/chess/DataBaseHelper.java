@@ -172,10 +172,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return returnList;
     }
 
-    public List<UserModel> getEveryoneSortedByWins() {
+    public List<UserModel> getEveryoneSortedByColumn(String column) {
         List<UserModel> returnList = new ArrayList<>();
 
-        String queryString = "SELECT * FROM " + USER_TABLE + " ORDER BY " + COLUMN_USER_WINS + " DESC";
+        String queryString = "SELECT * FROM " + USER_TABLE + " ORDER BY " + column + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(queryString, null);

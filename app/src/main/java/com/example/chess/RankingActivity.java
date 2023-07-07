@@ -10,6 +10,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import java.util.List;
 public class RankingActivity extends AppCompatActivity {
 
     TableLayout tableLayout;
+    RadioGroup radioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +28,29 @@ public class RankingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ranking);
 
         tableLayout = findViewById(R.id.layout_ranking);
-        fillRankingTable();
+        fillRankingTable(DataBaseHelper.COLUMN_USER_WINS, 1);
+
+        radioGroup = findViewById(R.id.radio_group);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if (checkedId == R.id.b1) {
+                    fillRankingTable(DataBaseHelper.COLUMN_USER_WINS, 1);
+                }
+                if (checkedId == R.id.b2) {
+                    fillRankingTable(DataBaseHelper.COLUMN_USER_DRAWS, 2);
+                }
+                if (checkedId == R.id.b3) {
+                    fillRankingTable(DataBaseHelper.COLUMN_USER_LOSES, 3);
+                }
+            }
+        });
     }
 
-    void fillRankingTable() {
+    void fillRankingTable(String column, int highlight) {
+        tableLayout.removeAllViews();
         DataBaseHelper dataBaseHelper = new DataBaseHelper(RankingActivity.this);
-        List<UserModel> usersSorted = dataBaseHelper.getEveryoneSortedByWins();
+        List<UserModel> usersSorted = dataBaseHelper.getEveryoneSortedByColumn(column);
 
         TableRow row = new TableRow(this);
         TextView[] columns = new TextView[4];
@@ -47,10 +66,14 @@ public class RankingActivity extends AppCompatActivity {
             columns[i].setWidth(250);
             columns[i].setHeight(100);
             columns[i].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            columns[i].setBackgroundColor(Color.MAGENTA);
+            columns[i].setBackgroundColor(Color.GRAY);
             columns[i].setGravity(Gravity.CENTER | Gravity.CENTER);
             columns[i].setTypeface(null, Typeface.BOLD);
             columns[i].setTextSize(14);
+
+            if (i == highlight) {
+                columns[i].setBackgroundColor(Color.MAGENTA);
+            }
             row.addView(columns[i]);
         }
         tableLayout.addView(row);
@@ -69,7 +92,7 @@ public class RankingActivity extends AppCompatActivity {
                 columns[i].setWidth(250);
                 columns[i].setHeight(100);
                 columns[i].setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                columns[i].setBackgroundColor(Color.GRAY);
+                columns[i].setBackgroundColor(Color.LTGRAY);
                 columns[i].setGravity(Gravity.CENTER | Gravity.CENTER);
                 columns[i].setTypeface(null, Typeface.BOLD);
                 columns[i].setTextSize(14);

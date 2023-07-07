@@ -17,7 +17,7 @@ public abstract class Figure {
         wasMoved = false;
     }
 
-    public abstract List<Pair> getMoves(Figure[][] board, Game.LastMove lastMove);
+    public abstract List<Pair> getMoves(Game game);
 
     public int getRGBColor() {
         return color == FigColor.WHITE ? 0xFFFFFFFF : 0xFF000000;
@@ -31,9 +31,27 @@ public abstract class Figure {
         position.setPair(row, column);
     }
 
+    public boolean getWasMoved() {
+        return wasMoved;
+    }
+
     public void setWasMoved() {
         wasMoved = true;
     }
 
     public abstract String toString();
+
+    public boolean isCheckAfterMove(Game game, int newRow, int newColumn) {
+        Figure[][] board = game.getBoard();
+        Figure savedFigure = board[newRow][newColumn];
+        board[newRow][newColumn] = board[position.row][position.column];
+        board[position.row][position.column] = null;
+
+        boolean result = game.isCheck();
+
+        board[position.row][position.column] = board[newRow][newColumn];
+        board[newRow][newColumn] = savedFigure;
+
+        return result;
+    }
 }

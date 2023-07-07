@@ -11,7 +11,8 @@ public class King extends Figure {
     }
 
     @Override
-    public List<Pair> getMoves(Figure[][] board, Game.LastMove lastMove) {
+    public List<Pair> getMoves(Game game) {
+        Figure[][] board = game.getBoard();
         int x, y;
         List<Pair> possibleMoves = new ArrayList<>();
 
@@ -20,28 +21,32 @@ public class King extends Figure {
         y = position.column + 1;
         if (x <= numberOfRows && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row + 1;
         y = position.column - 1;
         if (x <= numberOfRows && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row - 1;
         y = position.column + 1;
         if (x > 0 && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row - 1;
         y = position.column - 1;
         if (x > 0 && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         // Ruch w boki
@@ -49,28 +54,54 @@ public class King extends Figure {
         y = position.column;
         if (x <= numberOfRows) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row;
         y = position.column + 1;
         if (y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row - 1;
         y = position.column;
         if (x > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row;
         y = position.column - 1;
         if (y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
+        }
+
+        // Wykrywanie możliwości roszady
+        if (!wasMoved) {
+            // król przesuwa się w prawo o 2 pola
+            if (board[position.row][8] != null && !board[position.row][8].getWasMoved() && !game.isCheck()) {
+                if (board[position.row][position.column + 1] == null
+                        && board[position.row][position.column + 2] == null
+                        && !isCheckAfterMove(game, position.row, position.column + 1)
+                        && !isCheckAfterMove(game, position.row, position.column + 2)) {
+                    possibleMoves.add(new Pair(position.row, position.column + 2));
+                }
+            }
+            if (board[position.row][1] != null && !board[position.row][1].getWasMoved() && !game.isCheck()) {
+                if (board[position.row][position.column - 1] == null
+                        && board[position.row][position.column - 2] == null
+                        && board[position.row][position.column - 3] == null
+                        && !isCheckAfterMove(game, position.row, position.column - 1)
+                        && !isCheckAfterMove(game, position.row, position.column - 2)) {
+                    possibleMoves.add(new Pair(position.row, position.column - 2));
+                }
+            }
         }
 
         return possibleMoves;
@@ -79,5 +110,23 @@ public class King extends Figure {
     @Override
     public String toString() {
         return "K";
+    }
+
+    @Override
+    public boolean isCheckAfterMove(Game game, int newRow, int newColumn) {
+        Figure[][] board = game.getBoard();
+        Figure savedFigure = board[newRow][newColumn];
+        board[newRow][newColumn] = board[position.row][position.column];
+        board[position.row][position.column] = null;
+
+        game.moveKing(newRow, newColumn);
+
+        boolean result = game.isCheck();
+
+        board[position.row][position.column] = board[newRow][newColumn];
+        board[newRow][newColumn] = savedFigure;
+        game.moveKing(position.row, position.column);
+
+        return result;
     }
 }

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     int[] player_id = new int[2];
     Game game;
     List<Pair> possibleMoves;
+    TextView checkText;
 
 
     @SuppressLint("ResourceType")
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         Button player_1_wins = findViewById(R.id.player_1_wins);
         Button player_2_wins = findViewById(R.id.player_2_wins);
         Button draw = findViewById(R.id.draw);
+        checkText = findViewById(R.id.textViewCheck);
 
         float scale = getResources().getDisplayMetrics().density;
         int paddingPixel = (int) (paddingDp * scale + 0.5f);
@@ -155,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     game.setChosenField(currentRow, currentColumn);
                     ((Button) view).setBackgroundColor(Color.MAGENTA);
 
-                    possibleMoves = board[currentRow][currentColumn].getMoves(board, game.getLastMove());
+                    possibleMoves = board[currentRow][currentColumn].getMoves(game);
                     for (int i = 0; i < possibleMoves.size(); i++) {
                         int tempId = (possibleMoves.get(i).row - 1) * numberOfColumns + (possibleMoves.get(i).column - 1);
                         Button btn = findViewById(tempId);
@@ -209,6 +212,36 @@ public class MainActivity extends AppCompatActivity {
 
                     if (chosenFigure instanceof King) {
                         game.moveKing(currentRow, currentColumn);
+
+                        // Sprawdzamy, czy to była roszada
+                        if (currentColumn - chosenField.column == 2) {
+                            board[chosenField.row][8].setPosition(chosenField.row, currentColumn - 1);
+                            board[chosenField.row][currentColumn - 1] = board[chosenField.row][8];
+                            board[chosenField.row][8] = null;
+                            countedId = (currentRow - 1) * numberOfColumns + ((currentColumn - 1) - 1);
+                            btn = findViewById(countedId);
+                            btn.setText(board[chosenField.row][currentColumn - 1].toString());
+                            btn.setTextColor(board[chosenField.row][currentColumn - 1].getRGBColor());
+
+                            countedId = (currentRow - 1) * numberOfColumns + (8 - 1);
+                            btn = findViewById(countedId);
+                            btn.setText("-");
+                            btn.setTextColor(Color.BLACK);
+                        }
+                        else if (currentColumn - chosenField.column == -2) {
+                            board[chosenField.row][1].setPosition(chosenField.row, currentColumn + 1);
+                            board[chosenField.row][currentColumn + 1] = board[chosenField.row][1];
+                            board[chosenField.row][1] = null;
+                            countedId = (currentRow - 1) * numberOfColumns + ((currentColumn + 1) - 1);
+                            btn = findViewById(countedId);
+                            btn.setText(board[chosenField.row][currentColumn + 1].toString());
+                            btn.setTextColor(board[chosenField.row][currentColumn + 1].getRGBColor());
+
+                            countedId = (currentRow - 1) * numberOfColumns + (1 - 1);
+                            btn = findViewById(countedId);
+                            btn.setText("-");
+                            btn.setTextColor(Color.BLACK);
+                        }
                     }
 
                     // Zmieniamy stan gry
@@ -227,8 +260,21 @@ public class MainActivity extends AppCompatActivity {
                         btn = findViewById(tempId);
                         btn.setBackgroundColor(Color.GRAY);
                     }
-
                     possibleMoves.clear();
+
+                    GameStatus status = game.getStatus();
+                    if (status == GameStatus.CHECK) {
+                        checkText.setText("Check");
+                    }
+                    else if (status == GameStatus.CHECKMATE) {
+                        checkText.setText("Checkmate");
+                    }
+                    else if (status == GameStatus.STALEMATE) {
+                        checkText.setText("Stalemate");
+                    }
+                    else {
+                        checkText.setText("");
+                    }
                 }
             }
         }

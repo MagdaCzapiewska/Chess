@@ -3,8 +3,8 @@ package com.example.chess.game_engine;
 import static java.lang.Math.abs;
 
 import com.example.chess.FigColor;
+import com.example.chess.GameStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -16,7 +16,7 @@ public class Game {
     private FigColor whoseTurn;
     private final Pair chosenField;
     private final LastMove lastMove;
-    private final Pair[] kingPostion;
+    private final Pair[] kingPosition;
 
     public Game(int[] player_id) {
         this.player_id = player_id;
@@ -25,9 +25,9 @@ public class Game {
         chosenField = new Pair(0, 0);
         lastMove = new LastMove();
 
-        kingPostion = new Pair[2];
-        kingPostion[0] = new Pair(8,5);
-        kingPostion[1] = new Pair(1,5);
+        kingPosition = new Pair[2];
+        kingPosition[0] = new Pair(8,5);
+        kingPosition[1] = new Pair(1,5);
     }
 
     private void createBoard() {
@@ -105,14 +105,40 @@ public class Game {
 
     public void moveKing(int row, int column) {
         if (whoseTurn == FigColor.WHITE)
-            kingPostion[0].setPair(row, column);
+            kingPosition[0].setPair(row, column);
         else
-            kingPostion[1].setPair(row, column);
+            kingPosition[1].setPair(row, column);
+    }
+
+    public GameStatus getStatus() {
+        boolean isThereAMove = false;
+        for (int i = 1; i <= numberOfRows && !isThereAMove; i++) {
+            for (int j = 1; j <= numberOfColumns && !isThereAMove; j++) {
+                if (board[i][j] != null && board[i][j].getColor() == whoseTurn) {
+                    List<Pair> moves = board[i][j].getMoves(this);
+                    if (!moves.isEmpty()) {
+                        isThereAMove = true;
+                        moves.clear();
+                    }
+                }
+            }
+        }
+        boolean isCheck = isCheck();
+        if (isThereAMove && isCheck) {
+            return GameStatus.CHECK;
+        }
+        if (!isThereAMove && isCheck) {
+            return GameStatus.CHECKMATE;
+        }
+        if (!isThereAMove) {    // na pewno isCheck == false
+            return GameStatus.STALEMATE;
+        }
+        return GameStatus.NOTHING;
     }
 
     public boolean isCheck() {
         int color = (whoseTurn == FigColor.WHITE ? 0 : 1);
-        int kingRow = kingPostion[color].row; int kingColumn = kingPostion[color].column;
+        int kingRow = kingPosition[color].row; int kingColumn = kingPosition[color].column;
         int x, y;
 
         // Ruch poprzeczny

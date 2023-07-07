@@ -11,7 +11,8 @@ public class Queen extends Figure {
     }
 
     @Override
-    public List<Pair> getMoves(Figure[][] board, Game.LastMove lastMove) {
+    public List<Pair> getMoves(Game game) {
+        Figure[][] board = game.getBoard();
         int x, y;
         List<Pair> possibleMoves = new ArrayList<>();
 
@@ -20,7 +21,8 @@ public class Queen extends Figure {
         y = position.column + 1;
         while (x <= numberOfRows && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             x++; y++;
@@ -30,7 +32,8 @@ public class Queen extends Figure {
         y = position.column - 1;
         while (x <= numberOfRows && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             x++; y--;
@@ -40,7 +43,8 @@ public class Queen extends Figure {
         y = position.column + 1;
         while (x > 0 && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             x--; y++;
@@ -50,7 +54,8 @@ public class Queen extends Figure {
         y = position.column - 1;
         while (x > 0 && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             x--; y--;
@@ -61,7 +66,8 @@ public class Queen extends Figure {
         y = position.column;
         while (x <= numberOfRows) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             x++;
@@ -71,7 +77,8 @@ public class Queen extends Figure {
         y = position.column + 1;
         while (y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             y++;
@@ -81,7 +88,8 @@ public class Queen extends Figure {
         y = position.column;
         while (x > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             x--;
@@ -91,7 +99,8 @@ public class Queen extends Figure {
         y = position.column - 1;
         while (y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
 
             if (board[x][y] != null) break;
             y--;

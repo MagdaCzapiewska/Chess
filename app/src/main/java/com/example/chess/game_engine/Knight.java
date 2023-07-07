@@ -11,7 +11,8 @@ public class Knight extends Figure {
     }
 
     @Override
-    public List<Pair> getMoves(Figure[][] board, Game.LastMove lastMove) {
+    public List<Pair> getMoves(Game game) {
+        Figure[][] board = game.getBoard();
         int x, y;
         List<Pair> possibleMoves = new ArrayList<>();
 
@@ -19,56 +20,64 @@ public class Knight extends Figure {
         y = position.column + 1;
         if (x <= numberOfRows && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row + 1;
         y = position.column + 2;
         if (x <= numberOfRows && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row - 1;
         y = position.column + 2;
         if (x > 0 && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row - 2;
         y = position.column + 1;
         if (x > 0 && y <= numberOfColumns) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row - 2;
         y = position.column - 1;
         if (x > 0 && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row - 1;
         y = position.column - 2;
         if (x > 0 && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row + 1;
         y = position.column - 2;
         if (x <= numberOfRows && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         x = position.row + 2;
         y = position.column - 1;
         if (x <= numberOfRows && y > 0) {
             if (board[x][y] == null || board[x][y].getColor() != color)
-                possibleMoves.add(new Pair(x, y));
+                if (!isCheckAfterMove(game, x, y))
+                    possibleMoves.add(new Pair(x, y));
         }
 
         return possibleMoves;

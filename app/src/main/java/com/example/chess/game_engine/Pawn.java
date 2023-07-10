@@ -1,5 +1,7 @@
 package com.example.chess.game_engine;
 
+import android.content.Context;
+
 import com.example.chess.FigColor;
 
 import java.util.ArrayList;
@@ -58,15 +60,15 @@ public class Pawn extends Figure {
         if (color == FigColor.BLACK) {
             x = position.row + 1;
 
-            if (x < numberOfRows && y + 1 <= numberOfColumns && board[x][y + 1] != null && board[x][y + 1].getColor() != color)
+            if (x <= numberOfRows && y + 1 <= numberOfColumns && board[x][y + 1] != null && board[x][y + 1].getColor() != color)
                 if (!isCheckAfterMove(game, x, y + 1))
                     possibleMoves.add(new Pair(x, y + 1));
 
-            if (x < numberOfRows && y - 1 > 0 && board[x][y - 1] != null && board[x][y - 1].getColor() != color)
+            if (x <= numberOfRows && y - 1 > 0 && board[x][y - 1] != null && board[x][y - 1].getColor() != color)
                 if (!isCheckAfterMove(game, x, y - 1))
                     possibleMoves.add(new Pair(x, y - 1));
 
-            if (x < numberOfRows && board[x][y] == null) {
+            if (x <= numberOfRows && board[x][y] == null) {
                 if (!isCheckAfterMove(game, x, y))
                     possibleMoves.add(new Pair(x, y));
 
@@ -121,5 +123,13 @@ public class Pawn extends Figure {
         }
 
         return result;
+    }
+
+    @Override
+    public int getIdOfResource(Context context, String packageName) {
+        if (color == FigColor.WHITE) {
+            return context.getResources().getIdentifier("@drawable/w_pawn_1x_ns", "id", packageName);
+        }
+        return context.getResources().getIdentifier("@drawable/b_pawn_1x_ns", "id", packageName);
     }
 }

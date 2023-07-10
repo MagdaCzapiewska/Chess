@@ -1,5 +1,7 @@
 package com.example.chess.game_engine;
 
+import android.content.Context;
+
 import com.example.chess.FigColor;
 
 import java.util.List;
@@ -54,4 +56,6 @@ public abstract class Figure {
 
         return result;
     }
+
+    public abstract int getIdOfResource(Context context, String packageName);
 }

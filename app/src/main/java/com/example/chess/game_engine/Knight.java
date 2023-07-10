@@ -1,5 +1,7 @@
 package com.example.chess.game_engine;
 
+import android.content.Context;
+
 import com.example.chess.FigColor;
 
 import java.util.ArrayList;
@@ -86,5 +88,13 @@ public class Knight extends Figure {
     @Override
     public String toString() {
         return "S";
+    }
+
+    @Override
+    public int getIdOfResource(Context context, String packageName) {
+        if (color == FigColor.WHITE) {
+            return context.getResources().getIdentifier("@drawable/w_knight_1x_ns", "id", packageName);
+        }
+        return context.getResources().getIdentifier("@drawable/b_knight_1x_ns", "id", packageName);
     }
 }

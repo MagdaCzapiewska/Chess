@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -132,16 +133,15 @@ public class MainActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.WRAP_CONTENT
             ));
             for (int column = 0; column < numberOfColumns; column++) {
-                Button button = new Button(this, null, 0, R.style.SquareStyle);
+                ImageButton button = new ImageButton(this, null, 0, R.style.SquareStyle);
                 button.setId(row * numberOfColumns + column);
-                button.setBackgroundColor(Color.GRAY);
+                button.setBackgroundColor(getRGBColorForTile(row + 1, column + 1));
                 button.setOnClickListener(selectTile);
+                button.setPadding(12, 12, 12, 12);
                 button.setLayoutParams(new LinearLayout.LayoutParams(
                         btnWeight,
                         btnHeight
                 ));
-
-                // button.setOnClickListener(this);
                 rowLayout.addView(button);
 
                 Log.d("MainActivity", "Button " + row + " " + column + " created with id " + button.getId());
@@ -167,25 +167,27 @@ public class MainActivity extends AppCompatActivity {
                 if (board[currentRow][currentColumn] != null
                         && whoseTurn == board[currentRow][currentColumn].getColor()) {
                     game.setChosenField(currentRow, currentColumn);
-                    ((Button) view).setBackgroundColor(Color.MAGENTA);
+                    ((ImageButton) view).setBackgroundColor(0xFF689F38);
 
                     possibleMoves = board[currentRow][currentColumn].getMoves(game);
                     for (int i = 0; i < possibleMoves.size(); i++) {
-                        int tempId = (possibleMoves.get(i).row - 1) * numberOfColumns + (possibleMoves.get(i).column - 1);
-                        Button btn = findViewById(tempId);
-                        btn.setBackgroundColor(Color.RED);
+                        Pair p = possibleMoves.get(i);
+                        int tempId = (p.row - 1) * numberOfColumns + (p.column - 1);
+                        ImageButton btn = findViewById(tempId);
+                        btn.setBackgroundColor(getRGBColorForPossibilities(p.row, p.column));
                     }
                 }
             } else {
                 if (chosenField.row == currentRow && chosenField.column == currentColumn) {
                     // Czyścimy podświetlenie pól
                     game.setChosenField(0,0);
-                    ((Button)view).setBackgroundColor(Color.GRAY);
+                    ((ImageButton)view).setBackgroundColor(getRGBColorForTile(currentRow, currentColumn));
 
                     for (int i = 0; i < possibleMoves.size(); i++) {
-                        int tempId = (possibleMoves.get(i).row - 1) * numberOfColumns + (possibleMoves.get(i).column - 1);
-                        Button btn = findViewById(tempId);
-                        btn.setBackgroundColor(Color.GRAY);
+                        Pair p = possibleMoves.get(i);
+                        int tempId = (p.row - 1) * numberOfColumns + (p.column - 1);
+                        ImageButton btn = findViewById(tempId);
+                        btn.setBackgroundColor(getRGBColorForTile(p.row, p.column));
                     }
 
                     possibleMoves.clear();
@@ -195,16 +197,14 @@ public class MainActivity extends AppCompatActivity {
                     // TODO: zmienić na obrazki
                     // Zamieniamy stary przycisk na '-'
                     int countedId = (chosenField.row - 1) * numberOfColumns + (chosenField.column - 1);
-                    Button btn = findViewById(countedId);
-                    btn.setText("-");
-                    btn.setTextColor(Color.BLACK);
-                    btn.setBackgroundColor(Color.GRAY);
+                    ImageButton btn = findViewById(countedId);
+                    btn.setImageResource(0);
+                    btn.setBackgroundColor(getRGBColorForTile(chosenField.row, chosenField.column));
 
                     // Zamieniamy wybrany przycisk na wybraną wcześniej figurę
                     countedId = (currentRow - 1) * numberOfColumns + (currentColumn - 1);
                     btn = findViewById(countedId);
-                    btn.setText(board[chosenField.row][chosenField.column].toString());
-                    btn.setTextColor(board[chosenField.row][chosenField.column].getRGBColor());
+                    btn.setImageResource(board[chosenField.row][chosenField.column].getIdOfResource(MainActivity.this, MainActivity.this.getPackageName()));
 
                     // Sprawdzamy bicie w przelocie
                     if (chosenFigure instanceof Pawn
@@ -214,9 +214,8 @@ public class MainActivity extends AppCompatActivity {
 
                         countedId = (lastTo.row - 1) * numberOfColumns + (lastTo.column - 1);
                         btn = findViewById(countedId);
-                        btn.setText("-");
-                        btn.setTextColor(Color.BLACK);
-                        btn.setBackgroundColor(Color.GRAY);
+                        btn.setImageResource(0);
+                        btn.setBackgroundColor(getRGBColorForTile(lastTo.row, lastTo.column));
 
                         board[lastTo.row][lastTo.column] = null;
                     }
@@ -231,13 +230,11 @@ public class MainActivity extends AppCompatActivity {
                             board[chosenField.row][8] = null;
                             countedId = (currentRow - 1) * numberOfColumns + ((currentColumn - 1) - 1);
                             btn = findViewById(countedId);
-                            btn.setText(board[chosenField.row][currentColumn - 1].toString());
-                            btn.setTextColor(board[chosenField.row][currentColumn - 1].getRGBColor());
+                            btn.setImageResource(board[chosenField.row][currentColumn - 1].getIdOfResource(MainActivity.this, MainActivity.this.getPackageName()));
 
                             countedId = (currentRow - 1) * numberOfColumns + (8 - 1);
                             btn = findViewById(countedId);
-                            btn.setText("-");
-                            btn.setTextColor(Color.BLACK);
+                            btn.setImageResource(0);
                         }
                         else if (currentColumn - chosenField.column == -2) {
                             board[chosenField.row][1].setPosition(chosenField.row, currentColumn + 1);
@@ -245,13 +242,11 @@ public class MainActivity extends AppCompatActivity {
                             board[chosenField.row][1] = null;
                             countedId = (currentRow - 1) * numberOfColumns + ((currentColumn + 1) - 1);
                             btn = findViewById(countedId);
-                            btn.setText(board[chosenField.row][currentColumn + 1].toString());
-                            btn.setTextColor(board[chosenField.row][currentColumn + 1].getRGBColor());
+                            btn.setImageResource(board[chosenField.row][currentColumn + 1].getIdOfResource(MainActivity.this, MainActivity.this.getPackageName()));
 
                             countedId = (currentRow - 1) * numberOfColumns + (1 - 1);
                             btn = findViewById(countedId);
-                            btn.setText("-");
-                            btn.setTextColor(Color.BLACK);
+                            btn.setImageResource(0);
                         }
                     }
 
@@ -281,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < possibleMoves.size(); i++) {
                         int tempId = (possibleMoves.get(i).row - 1) * numberOfColumns + (possibleMoves.get(i).column - 1);
                         btn = findViewById(tempId);
-                        btn.setBackgroundColor(Color.GRAY);
+                        btn.setBackgroundColor(getRGBColorForTile(possibleMoves.get(i).row, possibleMoves.get(i).column));
                     }
                     possibleMoves.clear();
 
@@ -330,19 +325,16 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 int countedId = (i - 1) * numberOfColumns + (j - 1);
-                Button btn = findViewById(countedId);
-                if (board[i][j] == null) {
-                    btn.setText("-");
-                } else {
-                    btn.setText(board[i][j].toString());
-                    btn.setTextColor(board[i][j].getRGBColor());
+                ImageButton btn = findViewById(countedId);
+                if (board[i][j] != null) {
+                    btn.setImageResource(board[i][j].getIdOfResource(this, this.getPackageName()));
                 }
             }
         }
     }
 
     public void changeEnabledForBoardButtons(boolean enabled) {
-        Button b;
+        ImageButton b;
         for (int i = 0; i < numberOfRows * numberOfColumns; i++) {
             b = findViewById(i);
             b.setEnabled(enabled);
@@ -354,25 +346,63 @@ public class MainActivity extends AppCompatActivity {
         int newId = 0;
         figuresButtons.setOrientation(LinearLayout.HORIZONTAL);
         figuresButtons.setGravity(Gravity.CENTER);
-        Button b;
+        ImageButton b;
         for (int i = 0; i < 4; i++) {
-            b = new Button(this, null, 0, R.style.SquareStyle);
+            b = new ImageButton(this, null, 0, R.style.SquareStyle);
             newId = 1000 + i;
             b.setId(newId);
             b.setBackgroundColor(Color.GRAY);
-            b.setWidth(120);
-            b.setHeight(120);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                    120, 120
             );
             params.setMargins(4, 4, 4, 4);
             b.setLayoutParams(params);
             b.setOnClickListener(changeToFigure);
+
+            int id = getIdOfResourceForMenu(i);
+
+            b.setImageResource(id);
             figuresButtons.addView(b);
         }
         figuresView.setGravity(Gravity.CENTER_HORIZONTAL);
         figuresView.addView(figuresButtons);
+    }
+
+    public int getIdOfResourceForMenu(int i) {
+        int id = getResources().getIdentifier("@drawable/w_pawn_1x_ns", "id", this.getPackageName());
+        if (i == 0) {
+            if (game.getWhoseTurn() == FigColor.WHITE) {
+                id = getResources().getIdentifier("@drawable/w_knight_1x_ns", "id", this.getPackageName());
+            }
+            else {
+                id = getResources().getIdentifier("@drawable/b_knight_1x_ns", "id", this.getPackageName());
+            }
+        }
+        if (i == 1) {
+            if (game.getWhoseTurn() == FigColor.WHITE) {
+                id = getResources().getIdentifier("@drawable/w_bishop_1x_ns", "id", this.getPackageName());
+            }
+            else {
+                id = getResources().getIdentifier("@drawable/b_bishop_1x_ns", "id", this.getPackageName());
+            }
+        }
+        if (i == 2) {
+            if (game.getWhoseTurn() == FigColor.WHITE) {
+                id = getResources().getIdentifier("@drawable/w_rook_1x_ns", "id", this.getPackageName());
+            }
+            else {
+                id = getResources().getIdentifier("@drawable/b_rook_1x_ns", "id", this.getPackageName());
+            }
+        }
+        if (i == 3) {
+            if (game.getWhoseTurn() == FigColor.WHITE) {
+                id = getResources().getIdentifier("@drawable/w_queen_1x_ns", "id", this.getPackageName());
+            }
+            else {
+                id = getResources().getIdentifier("@drawable/b_queen_1x_ns", "id", this.getPackageName());
+            }
+        }
+        return id;
     }
 
     View.OnClickListener changeToFigure = new View.OnClickListener() {
@@ -399,10 +429,9 @@ public class MainActivity extends AppCompatActivity {
             }
             board[currentRowUsedForChangeToFigure][currentColumnUsedForChangeToFigure] = newFigure;
             int id = (currentRowUsedForChangeToFigure - 1) * numberOfColumns + currentColumnUsedForChangeToFigure - 1;
-            Button b = findViewById(id);
+            ImageButton b = findViewById(id);
             if (newFigure != null) {
-                b.setText(newFigure.toString());
-                b.setTextColor(newFigure.getRGBColor());
+                b.setImageResource(newFigure.getIdOfResource(MainActivity.this, MainActivity.this.getPackageName()));
             }
 
             figuresView.removeAllViews();
@@ -490,4 +519,18 @@ public class MainActivity extends AppCompatActivity {
             changeEnabledForBoardButtons(true);
         }
     };
+
+    public int getRGBColorForTile(int row, int column) {
+        if ((row + column) % 2 == 0) {
+            return 0xFFFECF9E;
+        }
+        return 0xFFD38C44;
+    }
+
+    public int getRGBColorForPossibilities(int row, int column) {
+        if ((row + column) % 2 == 0) {
+            return 0xFFAED581;
+        }
+        return 0xFF8BC34A;
+    }
 }

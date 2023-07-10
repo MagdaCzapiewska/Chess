@@ -1,5 +1,7 @@
 package com.example.chess.game_engine;
 
+import android.content.Context;
+
 import com.example.chess.FigColor;
 
 import java.util.ArrayList;
@@ -128,5 +130,13 @@ public class King extends Figure {
         game.moveKing(position.row, position.column);
 
         return result;
+    }
+
+    @Override
+    public int getIdOfResource(Context context, String packageName) {
+        if (color == FigColor.WHITE) {
+            return context.getResources().getIdentifier("@drawable/w_king_1x_ns", "id", packageName);
+        }
+        return context.getResources().getIdentifier("@drawable/b_king_1x_ns", "id", packageName);
     }
 }
